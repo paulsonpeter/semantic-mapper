@@ -1,0 +1,16 @@
+# Adapted from Streamlit's One Dark Pro theme; uses local system fonts.
+[theme]
+base = "dark"
+primaryColor = "#635bff"
+backgroundColor = "#282c34"
+secondaryBackgroundColor = "#21252b"
+textColor = "#e6edf3"
+borderColor = "#3e4451"
+showWidgetBorder = true
+showSidebarBorder = true
+baseRadius = "6px"
+buttonRadius = "6px"
+font = "sans-serif"
+
+[browser]
+gatherUsageStats = false
