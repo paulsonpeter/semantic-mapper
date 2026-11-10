@@ -52,11 +52,6 @@ st.markdown(
         border-color: #1d4ed8;
         color: #ffffff;
     }
-    div[data-testid="stExpander"] {
-        background: #f7f9fc;
-        border: 1px solid #dbe3ee;
-        border-radius: 0.65rem;
-    }
     </style>
     """,
     unsafe_allow_html=True,
@@ -115,7 +110,8 @@ if result:
     if result.get("saved"):
         st.success("Approved fault saved in the local database.")
 
-with st.expander("Approved faults", expanded=False):
+with st.sidebar:
+    st.subheader("Approved faults")
     try:
         saved = fault_store.records()
         if saved:
