@@ -27,6 +27,25 @@ st.caption("Powered by a cloud language model. No local software is required.")
 if not api_key:
     st.info("Cloud setup pending: the app owner needs to add OPENAI_API_KEY in Streamlit Secrets.")
 
+st.markdown(
+    """
+    <style>
+    div[data-testid="stTextInput"] input {
+        background-color: #fff8d8;
+        border: 1px solid #d8bd55;
+        border-radius: 0.5rem;
+        color: #3f3520;
+        font-weight: 600;
+    }
+    div[data-testid="stTextInput"] input:focus {
+        border-color: #b28a00;
+        box-shadow: 0 0 0 0.15rem rgba(216, 189, 85, 0.25);
+    }
+    </style>
+    """,
+    unsafe_allow_html=True,
+)
+
 
 def clear_result():
     st.session_state.pop("fault_normalization", None)
