@@ -1,7 +1,8 @@
 """Run with: python -m streamlit run streamlit_app.py"""
 import streamlit as st
 import sqlite3
-import aircraft_normalizer as normalizer
+import os
+import cloud_normalizer as normalizer
 import fault_store
 
 st.set_page_config(page_title="Aircraft report normalizer", page_icon=":material/flight:", layout="wide")
@@ -13,10 +14,18 @@ except sqlite3.Error:
     st.error("Cannot open the local approval database. Check that the data folder is writable.")
     st.stop()
 
-with st.sidebar:
-    st.subheader("Language model")
-    model = st.text_input("Ollama model", value=normalizer.MODEL)
-    st.caption("Ollama must run on the same computer as this app. Streamlit Cloud cannot reach Ollama on your laptop.")
+def setting(name, default=""):
+    try:
+        return st.secrets.get(name, os.environ.get(name, default))
+    except FileNotFoundError:
+        return os.environ.get(name, default)
+
+
+model = setting("OPENAI_MODEL", normalizer.MODEL)
+api_key = setting("OPENAI_API_KEY")
+st.caption("Powered by a cloud language model. No local software is required.")
+if not api_key:
+    st.info("Cloud setup pending: the app owner needs to add OPENAI_API_KEY in Streamlit Secrets.")
 
 
 def clear_result():
@@ -32,7 +41,7 @@ if st.button("Normalize paragraph", type="primary", disabled=not paragraph.strip
     clear_result()
     try:
         with st.spinner("Normalizing aircraft terminology..."):
-            result = normalizer.normalize_report(paragraph, model)
+            result = normalizer.normalize_report(paragraph, model, api_key=api_key)
         if not isinstance(result, dict) or not isinstance(result.get("normalized_term"), str) or not result["normalized_term"].strip():
             raise ValueError("The model did not return a fault term. Please try normalizing again.")
         st.session_state.fault_normalization = {"original": paragraph, "model": model, **result}

@@ -46,13 +46,13 @@ class NormalizerTests(unittest.TestCase):
 
         self.assertTrue(app.button[0].disabled)
         app.text_area[0].input("Noise during taxi. No vibration.").run()
-        with patch.object(n, "normalize_report", return_value={
+        with patch("cloud_normalizer.normalize_report", return_value={
                 "normalized_term": "WHEEL NOISE"}):
             app.button[0].click().run()
         self.assertIn("WHEEL NOISE", [item.value for item in app.text])
         app.text_area[0].input("Different report").run()
         self.assertNotIn("WHEEL NOISE", [item.value for item in app.text])
-        with patch.object(n, "normalize_report", side_effect=ValueError("Model unavailable")):
+        with patch("cloud_normalizer.normalize_report", side_effect=ValueError("Model unavailable")):
             app.button[0].click().run()
         self.assertEqual(app.error[0].value, "Model unavailable")
         self.assertFalse(app.exception)
@@ -66,6 +66,6 @@ class NormalizerTests(unittest.TestCase):
             "original": "Wheel is noisy", "model": "test", "normalized_text": "Old paragraph"}
         app.run()
         self.assertFalse(app.exception)
-        self.assertTrue(app.info)
+        self.assertTrue(any("previous result" in item.value for item in app.info))
         with self.assertRaises(KeyError):
             app.session_state["fault_normalization"]
