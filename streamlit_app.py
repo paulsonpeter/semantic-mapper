@@ -116,7 +116,7 @@ try:
     saved = fault_store.records()
     if saved:
         st.dataframe(saved, hide_index=True,
-                     column_order=["paragraph", "normalized_term", "model", "approved_at"],
+                     column_order=["normalized_term", "paragraph", "model", "approved_at"],
                      width="stretch", alt="Approved aircraft fault reports and normalized terms")
     else:
         st.info("Approved paragraphs and fault terms will appear here.")
