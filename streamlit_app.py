@@ -110,16 +110,15 @@ if result:
     if result.get("saved"):
         st.success("Approved fault saved in the local database.")
 
-st.divider()
-st.subheader("Approved faults")
-try:
-    saved = fault_store.records()
-    if saved:
-        st.dataframe(saved, hide_index=True,
-                     column_order=["normalized_term", "paragraph", "model", "approved_at"],
-                     width="stretch", alt="Approved aircraft fault reports and normalized terms")
-    else:
-        st.info("Approved paragraphs and fault terms will appear here.")
-except sqlite3.Error:
-    st.error("Could not load approved faults.")
+with st.expander("Approved faults", expanded=False):
+    try:
+        saved = fault_store.records()
+        if saved:
+            st.dataframe(saved, hide_index=True,
+                         column_order=["normalized_term", "paragraph", "model", "approved_at"],
+                         width="stretch", alt="Approved aircraft fault reports and normalized terms")
+        else:
+            st.info("Approved paragraphs and fault terms will appear here.")
+    except sqlite3.Error:
+        st.error("Could not load approved faults.")
 st.caption("Only approved results are saved. Identical paragraph and term pairs are stored once.")
