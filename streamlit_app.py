@@ -52,6 +52,11 @@ st.markdown(
         border-color: #1d4ed8;
         color: #ffffff;
     }
+    div[data-testid="stExpander"] {
+        background: #f7f9fc;
+        border: 1px solid #dbe3ee;
+        border-radius: 0.65rem;
+    }
     </style>
     """,
     unsafe_allow_html=True,
