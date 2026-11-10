@@ -41,6 +41,17 @@ st.markdown(
         border-color: #b28a00;
         box-shadow: 0 0 0 0.15rem rgba(216, 189, 85, 0.25);
     }
+    div[data-testid="stButton"] button[kind="primary"] {
+        background-color: #2563eb;
+        border-color: #2563eb;
+        color: #ffffff;
+        font-weight: 600;
+    }
+    div[data-testid="stButton"] button[kind="primary"]:hover {
+        background-color: #1d4ed8;
+        border-color: #1d4ed8;
+        color: #ffffff;
+    }
     </style>
     """,
     unsafe_allow_html=True,
@@ -88,7 +99,7 @@ if result:
     ).strip().upper()
     result["normalized_term"] = edited_term
     st.caption(f"Generated with {result['model']}. Review that the term matches the reported fault.")
-    if st.button("Approve & save", disabled=result.get("saved", False) or not edited_term):
+    if st.button("Approve & save", type="primary", disabled=result.get("saved", False) or not edited_term):
         try:
             fault_store.approve(result["original"], edited_term, result["model"])
             result["saved"] = True
