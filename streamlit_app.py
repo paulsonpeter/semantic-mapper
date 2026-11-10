@@ -30,6 +30,7 @@ if not api_key:
 
 def clear_result():
     st.session_state.pop("fault_normalization", None)
+    st.session_state.pop("normalized_term_editor", None)
 
 
 paragraph = st.text_area(
@@ -45,6 +46,7 @@ if st.button("Normalize paragraph", type="primary", disabled=not paragraph.strip
         if not isinstance(result, dict) or not isinstance(result.get("normalized_term"), str) or not result["normalized_term"].strip():
             raise ValueError("The model did not return a fault term. Please try normalizing again.")
         st.session_state.fault_normalization = {"original": paragraph, "model": model, **result}
+        st.session_state.normalized_term_editor = result["normalized_term"].strip().upper()
     except ValueError as exc:
         st.error(str(exc))
 
@@ -60,10 +62,16 @@ if result is not None and (not isinstance(result, dict)
 if result:
     st.subheader("Normalized fault term")
     st.text(result["normalized_term"])
+    edited_term = st.text_input(
+        "Edit normalized fault term if needed",
+        key="normalized_term_editor",
+        help="Review or correct the generated aircraft fault term before saving.",
+    ).strip().upper()
+    result["normalized_term"] = edited_term
     st.caption(f"Generated with {result['model']}. Review that the term matches the reported fault.")
-    if st.button("Approve & save", disabled=result.get("saved", False)):
+    if st.button("Approve & save", disabled=result.get("saved", False) or not edited_term):
         try:
-            added = fault_store.approve(result["original"], result["normalized_term"], result["model"])
+            fault_store.approve(result["original"], edited_term, result["model"])
             result["saved"] = True
             st.session_state.fault_normalization = result
             st.rerun()
